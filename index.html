@@ -3,33 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>用户信息登记系统</title>
+    <title>软件授权码申请</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>用户信息登记</h1>
-            <p>请填写基本信息</p>
+            <h1>软件授权码申请</h1>
+            <p>填写信息获取电脑软件验证码</p>
         </header>
         
-        <form id="userForm">
-            <div class="form-group">
-                <label for="name">姓名：</label>
-                <input type="text" id="name" name="name" required>
+        <form id="authorizationForm">
+            <!-- 用户信息区域 -->
+            <div class="form-section">
+                <h3>用户信息</h3>
+                <div class="form-group">
+                    <label for="name">姓名：</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone">手机号：</label>
+                    <input type="tel" id="phone" name="phone" maxlength="11" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">邮箱：</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
             </div>
             
-            <div class="form-group">
-                <label for="phone">手机号：</label>
-                <input type="tel" id="phone" name="phone" maxlength="11" required>
-            </div>
+            <!-- 提交按钮 -->
+            <button type="submit" id="submitBtn">申请验证码</button>
             
-            <div class="form-group">
-                <label for="email">邮箱：</label>
-                <input type="email" id="email" name="email" required>
+            <!-- 验证码显示区域（初始隐藏） -->
+            <div id="verificationSection" class="verification-section" style="display: none;">
+                <h3>✅ 验证码已生成</h3>
+                <div class="code-display">
+                    <label>软件验证码：</label>
+                    <div class="code-value" id="codeValue">Loading...</div>
+                    <button type="button" id="copyBtn" class="copy-btn">复制验证码</button>
+                </div>
+                <div class="usage-tips">
+                    <p>💡 使用说明：</p>
+                    <ul>
+                        <li>请在电脑软件中输入此验证码完成授权</li>
+                        <li>验证码有效期为30天</li>
+                        <li>每个账号限申请3次</li>
+                    </ul>
+                </div>
             </div>
-            
-            <button type="submit">提交信息</button>
         </form>
         
         <div id="result" class="result"></div>
