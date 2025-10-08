@@ -1,40 +1,14 @@
-// 配置您的云函数URL（需要替换为实际地址）
+// 配置您的云函数URL
 const API_URL = 'https://1304419785-1um55rrftj.ap-guangzhou.tencentscf.com';
 
-document.getElementById('userForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    
-    // 获取表单数据
+async function submitForm() {
     const formData = {
-        name: document.getElementById('name').value.trim(),
-        phone: document.getElementById('phone').value.trim(),
-        email: document.getElementById('email').value.trim(),
-        submitTime: new Date().toLocaleString('zh-CN')
+        name: document.getElementById('name').value,
+        phone: document.getElementById('phone').value,
+        email: document.getElementById('email').value
     };
     
-    // 基本验证
-    if (!formData.name || !formData.phone || !formData.email) {
-        showResult('请填写所有字段', 'error');
-        return;
-    }
-    
-    if (!/^1[3-9]\d{9}$/.test(formData.phone)) {
-        showResult('请输入正确的手机号', 'error');
-        return;
-    }
-    
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-        showResult('请输入正确的邮箱地址', 'error');
-        return;
-    }
-    
     try {
-        // 显示加载状态
-        const submitBtn = document.querySelector('button[type="submit"]');
-        submitBtn.disabled = true;
-        submitBtn.textContent = '提交中...';
-        
-        // 发送数据到云函数
         const response = await fetch(API_URL, {
             method: 'POST',
             headers: {
@@ -43,32 +17,21 @@ document.getElementById('userForm').addEventListener('submit', async function(e)
             body: JSON.stringify(formData)
         });
         
-        const result = await response.json();
+        // 云函数返回的是JSON下载文件，需要特殊处理
+        const blob = await response.blob();
+        const reader = new FileReader();
         
-        if (result.success) {
-            showResult('✅ 信息提交成功！', 'success');
-            document.getElementById('userForm').reset();
-        } else {
-            showResult('❌ 提交失败：' + (result.message || '请重试'), 'error');
-        }
+        reader.onload = function() {
+            const result = JSON.parse(reader.result);
+            if (result.success) {
+                showResult('✅ 提交成功！密钥：' + result.data.secretKey, 'success');
+            } else {
+                showResult('❌ ' + result.message, 'error');
+            }
+        };
+        reader.readAsText(blob);
+        
     } catch (error) {
-        showResult('❌ 网络错误，请检查连接', 'error');
-    } finally {
-        const submitBtn = document.querySelector('button[type="submit"]');
-        submitBtn.disabled = false;
-        submitBtn.textContent = '提交信息';
+        showResult('网络错误，请重试', 'error');
     }
-});
-
-function showResult(message, type) {
-    const resultEl = document.getElementById('result');
-    resultEl.textContent = message;
-    resultEl.className = 'result ' + type;
-    
-    // 3秒后自动隐藏
-    setTimeout(() => {
-        resultEl.textContent = '';
-        resultEl.className = 'result';
-    }, 3000);
 }
-
