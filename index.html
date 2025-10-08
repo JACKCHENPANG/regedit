@@ -3,51 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>软件授权码申请</title>
+    <title>EIS分析软件授权码申请</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>软件授权码申请</h1>
-            <p>填写信息获取电脑软件验证码</p>
+            <h1>EIS分析软件授权码申请</h1>
+            <p>填写信息获取EIS数据分析软件验证码</p>
         </header>
         
         <form id="authorizationForm">
-            <!-- 用户信息区域 -->
-            <div class="form-section">
-                <h3>用户信息</h3>
+            <!-- 必填信息区域 -->
+            <div class="form-section required-section">
+                <h3>必填信息</h3>
                 <div class="form-group">
-                    <label for="name">姓名：</label>
+                    <label for="name">姓名：<span class="required">*</span></label>
                     <input type="text" id="name" name="name" required>
                 </div>
                 
                 <div class="form-group">
-                    <label for="phone">手机号：</label>
+                    <label for="phone">手机号：<span class="required">*</span></label>
                     <input type="tel" id="phone" name="phone" maxlength="11" required>
                 </div>
                 
                 <div class="form-group">
-                    <label for="email">邮箱：</label>
+                    <label for="email">邮箱：<span class="required">*</span></label>
                     <input type="email" id="email" name="email" required>
                 </div>
             </div>
             
-            <!-- 提交按钮 -->
+            <!-- 选填信息区域 -->
+            <div class="form-section optional-section">
+                <h3>选填信息</h3>
+                <div class="form-group">
+                    <label for="company">公司名称：</label>
+                    <input type="text" id="company" name="company" placeholder="如：XX科技有限公司">
+                </div>
+                
+                <div class="form-group">
+                    <label for="school">学校/机构：</label>
+                    <input type="text" id="school" name="school" placeholder="如：XX大学">
+                </div>
+            </div>
+            
             <button type="submit" id="submitBtn">申请验证码</button>
             
-            <!-- 验证码显示区域（初始隐藏） -->
+            <!-- 验证码显示区域 -->
             <div id="verificationSection" class="verification-section" style="display: none;">
                 <h3>✅ 验证码已生成</h3>
                 <div class="code-display">
-                    <label>软件验证码：</label>
+                    <label>EIS数据分析软件验证码：</label>
                     <div class="code-value" id="codeValue">Loading...</div>
                     <button type="button" id="copyBtn" class="copy-btn">复制验证码</button>
                 </div>
                 <div class="usage-tips">
                     <p>💡 使用说明：</p>
                     <ul>
-                        <li>请在电脑软件中输入此验证码完成授权</li>
+                        <li>请在EIS数据分析软件中输入此验证码完成授权</li>
                         <li>验证码有效期为30天</li>
                         <li>每个账号限申请3次</li>
                     </ul>
@@ -55,7 +68,9 @@
             </div>
         </form>
         
-        <div id="result" class="result"></div>
+        <div id="result" class="result">
+            <div id="result-content"></div>
+        </div>
     </div>
     
     <script src="script.js"></script>
