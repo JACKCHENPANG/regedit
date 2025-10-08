@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EIS数据管理系统</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Microsoft YaHei', sans-serif; background: #f5f5f5; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .header { background: #2c3e50; color: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 20px; }
+        .stat-card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); text-align: center; }
+        .actions { margin: 20px 0; }
+        button { background: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-right: 10px; }
+        button:hover { background: #2980b9; }
+        table { width: 100%; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background: #34495e; color: white; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>EIS数据分析软件 - 数据管理系统</h1>
+            <p>实时监控用户注册数据</p>
+        </div>
+        
+        <div class="stats" id="stats">
+            <div class="stat-card">
+                <h3>总注册数</h3>
+                <p id="totalCount">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>今日注册</h3>
+                <p id="todayCount">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>最新注册</h3>
+                <p id="latestTime">暂无</p>
+            </div>
+        </div>
+        
+        <div class="actions">
+            <button onclick="downloadExcel()">📥 下载Excel数据</button>
+            <button onclick="refreshStats()">🔄 刷新数据</button>
+            <button onclick="viewRawData()">📊 查看原始数据</button>
+        </div>
+        
+        <div id="dataTable" style="display: none;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>时间</th><th>姓名</th><th>手机</th><th>邮箱</th><th>验证码</th><th>公司/学校</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+        
+        <div id="result"></div>
+    </div>
+
+    <script>
+        const API_URL = 'https://1304419785-1um55rrftj.ap-guangzhou.tencentscf.com';
+        
+        // 加载统计数据
+        async function loadStats() {
+            try {
+                const response = await fetch(`${API_URL}/admin/stats`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('totalCount').textContent = data.total_registrations;
+                    document.getElementById('todayCount').textContent = data.today_registrations;
+                    if (data.latest_registration) {
+                        document.getElementById('latestTime').textContent = data.latest_registration.timestamp;
+                    }
+                }
+            } catch (error) {
+                console.error('加载统计失败:', error);
+            }
+        }
+        
+        // 下载Excel
+        async function downloadExcel() {
+            try {
+                const response = await fetch(`${API_URL}/admin/download`);
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `EIS用户数据_${new Date().toLocaleDateString()}.xlsx`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    showResult('Excel文件下载成功', 'success');
+                } else {
+                    showResult('下载失败: 暂无数据', 'error');
+                }
+            } catch (error) {
+                showResult('下载失败: ' + error.message, 'error');
+            }
+        }
+        
+        // 查看原始数据
+        async function viewRawData() {
+            // 这里可以扩展为从JSON文件获取详细数据
+            showResult('详细数据查看功能需从Excel文件获取', 'info');
+        }
+        
+        function refreshStats() {
+            loadStats();
+            showResult('数据已刷新', 'success');
+        }
+        
+        function showResult(message, type) {
+            const resultEl = document.getElementById('result');
+            resultEl.innerHTML = `<div style="padding:10px;margin:10px 0;border-radius:5px;background:${
+                type === 'success' ? '#d4edda' : type === 'error' ? '#f8d7da' : '#d1ecf1'
+            }">${message}</div>`;
+        }
+        
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', loadStats);
+    </script>
+</body>
+</html>
