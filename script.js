@@ -1,5 +1,5 @@
 // 配置您的云函数URL（需要替换为实际地址）
-const API_URL = 'https://your-function-url.service.tcloudbase.com/submit';
+const API_URL = 'https://1304419785-1um55rrftj.ap-guangzhou.tencentscf.com';
 
 document.getElementById('userForm').addEventListener('submit', async function(e) {
     e.preventDefault();
@@ -71,3 +71,4 @@ function showResult(message, type) {
         resultEl.className = 'result';
     }, 3000);
 }
+
