@@ -12,13 +12,15 @@ document.getElementById('authorizationForm').addEventListener('submit', async fu
         name: document.getElementById('name').value.trim(),
         phone: document.getElementById('phone').value.trim(),
         email: document.getElementById('email').value.trim(),
+        company: document.getElementById('company').value.trim(),
+        school: document.getElementById('school').value.trim(),
         requestTime: new Date().toISOString(),
-        type: 'software_authorization'  // 标识这是软件验证码请求
+        type: 'software_authorization'
     };
     
-    // 验证数据
+    // 必填字段验证
     if (!formData.name || !formData.phone || !formData.email) {
-        showResult('请填写所有字段', 'error');
+        showResult('请填写所有必填字段', 'error');
         return;
     }
     
@@ -33,9 +35,7 @@ document.getElementById('authorizationForm').addEventListener('submit', async fu
         submitBtn.textContent = '生成验证码中...';
         resultEl.style.display = 'none';
         
-        console.log('发送请求到云函数:', formData);
-        
-        // 调用云函数生成验证码
+        // 调用云函数
         const response = await fetch(API_URL, {
             method: 'POST',
             headers: {
@@ -49,7 +49,6 @@ document.getElementById('authorizationForm').addEventListener('submit', async fu
         }
         
         const result = await response.json();
-        console.log('云函数返回:', result);
         
         if (result.success) {
             // 显示验证码区域
@@ -69,7 +68,6 @@ document.getElementById('authorizationForm').addEventListener('submit', async fu
         }
         
     } catch (error) {
-        console.error('请求错误:', error);
         showResult(`网络错误: ${error.message}`, 'error');
     } finally {
         submitBtn.disabled = false;
@@ -77,4 +75,15 @@ document.getElementById('authorizationForm').addEventListener('submit', async fu
     }
 });
 
-// 云函数也需要相应修改
+function showResult(message, type) {
+    const resultEl = document.getElementById('result');
+    const contentEl = document.getElementById('result-content');
+    
+    contentEl.innerHTML = message;
+    resultEl.className = 'result ' + type;
+    resultEl.style.display = 'block';
+    
+    setTimeout(() => {
+        resultEl.style.display = 'none';
+    }, 5000);
+}
