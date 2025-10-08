@@ -3,16 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的展示页面</title>
+    <title>用户信息登记系统</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <h1>欢迎来到我的页面</h1>
-        <p>这是一个通过GitHub Pages创建的静态网站示例。</p>
-        <button onclick="showMessage()">点击测试</button>
-        <p id="demo"></p>
+        <header>
+            <h1>用户信息登记</h1>
+            <p>请填写基本信息</p>
+        </header>
+        
+        <form id="userForm">
+            <div class="form-group">
+                <label for="name">姓名：</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="phone">手机号：</label>
+                <input type="tel" id="phone" name="phone" maxlength="11" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">邮箱：</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            
+            <button type="submit">提交信息</button>
+        </form>
+        
+        <div id="result" class="result"></div>
     </div>
+    
     <script src="script.js"></script>
 </body>
 </html>
